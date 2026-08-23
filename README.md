@@ -9,4 +9,4 @@
 
 - push_swap-visualizer
   - Just a visualizer for the push_swap 42 project.
-  - Contains [files for testing]<./push_swap-visualizer/testing_files> and a script to run with your own push_swap (Or try mine).
+  - Contains [files for testing](./push_swap-visualizer/testing_files) and a script to run with your own push_swap (Or try mine).
