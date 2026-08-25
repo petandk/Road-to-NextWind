@@ -21,7 +21,6 @@ export default function Front({
   moves100,
 }: Props) {
   const [is100, setIs100] = useState(false);
-
   const activeNumbers = !is100 ? defaultNumbers : numbers100;
   const activeMoves = !is100 ? defaultMoves : moves100;
 
@@ -33,8 +32,8 @@ export default function Front({
       >
         Test de {is100 ? "10" : "100"} valores
       </button>
-      <div className="bg-black text-green-400 p-4 rounded w-full max-w-2xl font-mono">
-        <Accordion defaultValue={["numbers"]} className="max-w-lg">
+      <div className="bg-black text-green-400 p-4 rounded w-full max-w-2xl font-mono border border-white">
+        <Accordion className="max-w-lg mx-auto">
           <AccordionItem value="numbers">
             <AccordionTrigger>Números desordenados</AccordionTrigger>
             <AccordionContent>
