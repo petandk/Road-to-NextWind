@@ -1,0 +1,28 @@
+# ===== macOS =====
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ===== Node.js (aplica a cualquier nivel) =====
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+
+# ===== Logs =====
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ===== Entorno y secretos =====
+.env
+.env.*
+!.env.example
+
+# ===== Varios =====
+*.pem
+*.tsbuildinfo
+.vercel
