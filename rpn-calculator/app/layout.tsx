@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Push_swap-visualizer",
-  description: "Just another app to learn Next.js",
+  title: "RPN calculator",
+  description: "Just another app to practice Next.js",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
