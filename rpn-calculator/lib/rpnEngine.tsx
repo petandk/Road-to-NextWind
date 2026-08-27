@@ -63,8 +63,7 @@ export function handleOperator(
       result = a * b;
       break;
     case "/":
-      if (b === 0) return currentState;
-      result = a / b;
+      result = b === 0 ? Infinity : a / b;
       break;
   }
   return {

@@ -16,6 +16,12 @@ export default function RPNCalculator() {
   const STEP_MS = 1200;
   const MERGE_MS = 700;
 
+  // Round for display (e.g. 3.3333333333333335 → 3.33) and keep "Infinity"
+  const formatResult = (value: number): string => {
+    if (!isFinite(value)) return String(value);
+    return String(Math.round(value * 100) / 100);
+  };
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isAnimating && animationSteps.length > 0) {
@@ -40,9 +46,13 @@ export default function RPNCalculator() {
 
   const handleButtonClick = (val: string) => {
     setErrorMessage(null);
-    setExpression((prev) =>
-      prev.endsWith(" ") || prev === "" ? prev + val : prev + " " + val,
-    );
+    setExpression((prev) => {
+      // Ignore a second "." in the same number
+      if (val === "." && prev.endsWith(".")) return prev;
+      // "." (and digits right after a ".") keep building the same number
+      if (val === "." || prev.endsWith(".")) return prev + val;
+      return prev === "" || prev.endsWith(" ") ? prev + val : prev + " " + val;
+    });
   };
   const handleClear = () => {
     setExpression("");
@@ -90,7 +100,10 @@ export default function RPNCalculator() {
   return (
     <main className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col items-center justify-center p-4 relative">
       {errorMessage && (
-        <div className="absolute top-6 z-50 animate-slide-up bg-red-950/90 border border-red-500/50 backdrop-blur-md text-red-200 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 max-w-sm">
+        <div
+          data-testid="error-box"
+          className="absolute top-6 z-50 animate-slide-up bg-red-950/90 border border-red-500/50 backdrop-blur-md text-red-200 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 max-w-sm"
+        >
           <span className="text-xl">⚠️</span>
           <div className="flex-1 text-xs">
             <strong className="block font-semibold text-red-100">
@@ -129,6 +142,7 @@ export default function RPNCalculator() {
             </span>
             <input
               type="text"
+              data-testid="expression-input"
               value={expression}
               onChange={(e) => {
                 setExpression(e.target.value);
@@ -139,7 +153,10 @@ export default function RPNCalculator() {
             />
           </div>
 
-          <div className="bg-neutral-900/60 border border-neutral-800/80 rounded-xl p-3 h-40 flex flex-col justify-end overflow-y-auto">
+          <div
+            data-testid="result-box"
+            className="bg-neutral-900/60 border border-neutral-800/80 rounded-xl p-3 h-40 flex flex-col justify-end overflow-y-auto"
+          >
             <span className="text-xs text-neutral-500 mb-1">Pila actual:</span>
             {displayStack.length === 0 && !nextIsMerge ? (
               <span className="text-neutral-600 italic text-xs">
@@ -160,7 +177,9 @@ export default function RPNCalculator() {
                       <span className="text-neutral-600 text-xs">
                         :{idx + 1}
                       </span>
-                      <span className="font-bold text-emerald-400">{val}</span>
+                      <span className="font-bold text-emerald-400">
+                        {formatResult(val)}
+                      </span>
                     </div>
                   );
                 })}
@@ -175,7 +194,7 @@ export default function RPNCalculator() {
                           :{stack.length - 1}
                         </span>
                         <span className="font-bold text-amber-300">
-                          {mergeA}
+                          {formatResult(mergeA)}
                         </span>
                       </div>
                       <div className="animate-merge-b flex justify-between items-center">
@@ -183,7 +202,7 @@ export default function RPNCalculator() {
                           :{stack.length}
                         </span>
                         <span className="font-bold text-amber-400">
-                          {mergeB}
+                          {formatResult(mergeB)}
                         </span>
                       </div>
                       <div className="animate-merge-result absolute inset-x-0 bottom-0 flex justify-between items-center">
@@ -191,7 +210,7 @@ export default function RPNCalculator() {
                           :{stack.length}
                         </span>
                         <span className="font-bold text-emerald-400">
-                          {mergeResult}
+                          {formatResult(mergeResult)}
                         </span>
                       </div>
                     </div>
@@ -203,24 +222,28 @@ export default function RPNCalculator() {
 
         <div className="grid grid-cols-4 gap-2 p-4 bg-neutral-900">
           <button
+            data-testid="btn-ac"
             onClick={handleClear}
             className="bg-red-950/40 hover:bg-red-900/50 text-red-400 border border-red-900/50 py-3 rounded-xl font-medium transition text-sm"
           >
             AC
           </button>
           <button
+            data-testid="btn-backspace"
             onClick={() => setExpression((prev) => prev.slice(0, -1))}
             className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 py-3 rounded-xl font-medium transition"
           >
             ⌫
           </button>
           <button
+            data-testid="btn-divide"
             onClick={() => handleButtonClick("/")}
             className="bg-amber-600 hover:bg-amber-500 text-white py-3 rounded-xl font-medium transition"
           >
             ÷
           </button>
           <button
+            data-testid="btn-multiply"
             onClick={() => handleButtonClick("*")}
             className="bg-amber-600 hover:bg-amber-500 text-white py-3 rounded-xl font-medium transition"
           >
@@ -228,24 +251,28 @@ export default function RPNCalculator() {
           </button>
 
           <button
+            data-testid="btn-7"
             onClick={() => handleButtonClick("7")}
             className="bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
             7
           </button>
           <button
+            data-testid="btn-8"
             onClick={() => handleButtonClick("8")}
             className="bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
             8
           </button>
           <button
+            data-testid="btn-9"
             onClick={() => handleButtonClick("9")}
             className="bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
             9
           </button>
           <button
+            data-testid="btn-subtract"
             onClick={() => handleButtonClick("-")}
             className="bg-amber-600 hover:bg-amber-500 text-white py-3 rounded-xl font-medium transition"
           >
@@ -253,24 +280,28 @@ export default function RPNCalculator() {
           </button>
 
           <button
+            data-testid="btn-4"
             onClick={() => handleButtonClick("4")}
             className="bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
             4
           </button>
           <button
+            data-testid="btn-5"
             onClick={() => handleButtonClick("5")}
             className="bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
             5
           </button>
           <button
+            data-testid="btn-6"
             onClick={() => handleButtonClick("6")}
             className="bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
             6
           </button>
           <button
+            data-testid="btn-add"
             onClick={() => handleButtonClick("+")}
             className="bg-amber-600 hover:bg-amber-500 text-white py-3 rounded-xl font-medium transition"
           >
@@ -278,18 +309,21 @@ export default function RPNCalculator() {
           </button>
 
           <button
+            data-testid="btn-1"
             onClick={() => handleButtonClick("1")}
             className="bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
             1
           </button>
           <button
+            data-testid="btn-2"
             onClick={() => handleButtonClick("2")}
             className="bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
             2
           </button>
           <button
+            data-testid="btn-3"
             onClick={() => handleButtonClick("3")}
             className="bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
@@ -297,6 +331,7 @@ export default function RPNCalculator() {
           </button>
 
           <button
+            data-testid="btn-animate"
             onClick={handleRun}
             disabled={isAnimating}
             className="row-span-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-neutral-800 text-white rounded-xl font-bold flex items-center justify-center transition text-xs shadow-lg"
@@ -305,12 +340,14 @@ export default function RPNCalculator() {
           </button>
 
           <button
+            data-testid="btn-0"
             onClick={() => handleButtonClick("0")}
             className="col-span-2 bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
             0
           </button>
           <button
+            data-testid="btn-dot"
             onClick={() => handleButtonClick(".")}
             className="bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl font-medium transition"
           >
