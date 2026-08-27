@@ -1,6 +1,6 @@
 # Road-to-NextWind
 
-## Just some random projects to practice/learn Next.js + taildiwnd
+## Just some random projects to practice/learn Next.js + tailwind CSS
 #### I've also practiced some debug automation with [Playwright](https://playwright.dev/) so, Playwright test files are included.
 
 - Tres en linea
