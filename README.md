@@ -1,7 +1,7 @@
 # Road-to-NextWind
 
 ## Just some random projects to practice/learn Next.js + taildiwnd
-### I've also practiced some debug automation with [Playwright](https://playwright.dev/)
+#### I've also practiced some debug automation with [Playwright](https://playwright.dev/) so, Playwright test files are included.
 
 - Tres en linea
   - Just the example project on react.dev/learn
